@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hivenews Dashboard</title>
+<style>
+    :root {
+        --primary: #3b82f6; --bg: #0a1e3c; --card: rgba(255,255,255,0.08);
+        --text: #ffffff; --muted: rgba(255,255,255,0.7); --danger: #ef4444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+    
+    /* HEADER */
+    header { background: rgba(10,30,60,0.7); backdrop-filter: blur(16px); padding: 16px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .brand { font-size: 22px; font-weight: 700; cursor: pointer; }
+    nav { display: flex; gap: 20px; }
+    nav a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; transition: 0.2s; }
+    nav a:hover { color: var(--primary); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    
+    .btn { padding: 10px 18px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .btn:hover { transform: translateY(-1px); background: #2563eb; }
+    .btn-danger { background: var(--danger); padding: 6px 10px; font-size: 12px; }
+    .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+
+    /* HERO */
+    .hero { padding: 24px 5% 0; }
+    .hero img { width: 100%; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .hero-overlay { position: relative; }
+    .hero-text {
+        position: absolute; top: 50%; left: 8%; transform: translateY(-50%);
+        max-width: 500px;
+    }
+    .hero-text h1 { font-size: 40px; line-height: 1.2; margin-bottom: 12px; }
+    .hero-text p { font-size: 16px; opacity: 0.9; margin-bottom: 20px; }
+    .hero-buttons { display: flex; gap: 10px; }
+    
+    /* Category Cards */
+    .categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 20px 5%; }
+    .cat-card { background: var(--card); backdrop-filter: blur(12px); padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
+    .cat-card:hover { background: rgba(59,130,246,0.2); border-color: var(--primary); }
+    .cat-card .icon { font-size: 24px; }
+
+    .container { max-width: 1100px; margin: 20px auto; padding: 0 5%; }
+    .admin-panel { background: var(--card); backdrop-filter: blur(16px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 30px; }
+    .admin-panel input, .admin-panel textarea, .toolbar input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.1); color: #fff; }
+    
+    .news-card { background: rgba(255,255,255,0.95); color: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .news-card h4 { font-size: 20px; margin: 8px 0; }
+    .badge { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+    .comment-box { background: #f1f5f9; padding: 10px 12px; border-radius: 8px; margin: 6px 0; font-size: 14px; }
+    
+    #pagination { display: flex; gap: 8px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+    #pagination button { padding: 8px 14px; border: 1px solid rgba(255,255,255,0.3); background: var(--card); color: #fff; border-radius: 8px; cursor: pointer; }
+    #pagination button.active { background: var(--primary); }
+    
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+    .spinner { border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: #fff; padding: 12px 20px; border-radius: 8px; z-index: 999; }
+    .toast.error { background: var(--danger); }
+    
+    @media (max-width: 768px) { 
+        nav { display: none; } 
+        .categories { grid-template-columns: repeat(2, 1fr); } 
+        .hero-text h1 { font-size: 28px; }
+        .hero-text { position: static; transform: none; padding: 20px; background: rgba(10,30,60,0.7); border-radius: 16px; margin-top: -10px; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="brand" onclick="scrollToTop()">📰 Hivenews</div>
+    <nav>
+        <a href="#" onclick="filterByCategory('All')">Home</a>
+        <a href="#" onclick="filterByCategory('World')">World</a>
+        <a href="#" onclick="filterByCategory('Technology')">Tech</a>
+        <a href="#" onclick="filterByCategory('Sports')">Sports</a>
+        <a href="#" onclick="filterByCategory('Politics')">Politics</a>
+    </nav>
+    <div class="header-right">
+        <span id="user-welcome" style="font-size: 14px;"></span>
+        <button class="btn" onclick="handleLogout()">Logout</button>
+    </div>
+</header>
+
+<!-- HERO FROM HOME.HTML -->
+<section class="hero">
+  <div class="hero-overlay">
+    <img src="hivenews_hero_banner.webp" alt="Hivenews Homepage">
+    <div class="hero-text">
+        <h1>Stay Ahead with<br>Real-Time News</h1>
+        <p>Breaking stories, trusted analysis, and live updates from around the world</p>
+        <div class="hero-buttons">
+            <button class="btn" onclick="document.getElementById('news-feed').scrollIntoView()">Explore Live ▶</button>
+            <button class="btn btn-secondary" onclick="watchLive()">📷 Watch Live</button>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES FROM HOME.HTML -->
+<div class="categories">
+    <div class="cat-card" onclick="filterByCategory('All')"><div class="icon">🌍</div> <b>All</b></div>
+    <div class="cat-card" onclick="filterByCategory('World')"><div class="icon">🌐</div> <b>World</b></div>
+    <div class="cat-card" onclick="filterByCategory('Technology')"><div class="icon">💻</div> <b>Tech</b></div>
+    <div class="cat-card" onclick="filterByCategory('Sports')"><div class="icon">⚽</div> <b>Sports</b></div>
+</div>
+
+<!-- YOUR EXISTING DASHBOARD CONTENT -->
+<div class="container">
+    <div id="admin-panel" class="admin-panel hidden">
+        <h3>Publish New Article</h3>
+        <input type="date" id="post-date">
+        <input type="text" id="post-category" placeholder="Category: World, Technology, Sports">
+        <input type="text" id="post-title" placeholder="Article Title">
+        <textarea id="post-content" placeholder="Write the full article content..." rows="4"></textarea>
+        <button class="btn" onclick="postNews()">Publish Article</button>
+    </div>
+
+    <div class="toolbar" style="display:flex; gap:10px;">
+        <input type="text" id="search-input" placeholder="Search by title or keyword...">
+        <button class="btn" onclick="searchNews()">Search</button>
+        <button class="btn btn-secondary" onclick="loadNews(1)">Reset</button>
+    </div>
+
+    <div id="news-feed"><div class="loading"><div class="spinner"></div><p>Loading news...</p></div></div>
+    <div id="pagination"></div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+    const API_URL = "https://hivenews-v2.onrender.com";
+    let accessToken = localStorage.getItem("access_token") || "";
+    let currentUserRole = localStorage.getItem("user_role") || "";
+    let currentPage = 1;
+
+    window.onload = () => {
+        if (!accessToken) return window.location.href = "index.html";
+        document.getElementById('post-date').valueAsDate = new Date(); 
+        document.getElementById('user-welcome').innerText = `Hi, ${currentUserRole}`;
+        if (currentUserRole === 'admin') document.getElementById('admin-panel').classList.remove('hidden');
+        
+        // Check if user came from home.html category click
+        const selectedCat = localStorage.getItem('selected_category');
+        if(selectedCat) {
+            filterByCategory(selectedCat);
+            localStorage.removeItem('selected_category');
+        } else {
+            loadNews();
+        }
+    };
+
+    function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+    function watchLive() { window.open("https://youtube.com/live/EPS9dJY0pqk?si=rNjd0nQlKtByGORN"); }
+
+    function showToast(msg, type='success') {
+        const t = document.getElementById('toast'); t.innerText = msg; t.className = `toast ${type==='error'?'error':''}`; t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+
+    async function apiFetch(url, options = {}) {
+        options.headers = { ...options.headers, 'Authorization': `Bearer ${accessToken}` };
+        try {
+            const res = await fetch(url, options);
+            if (res.status === 401) { showToast("Session expired", "error"); handleLogout(); }
+            return res;
+        } catch (err) { showToast("Network error", "error"); }
+    }
+
+    function handleLogout() { localStorage.clear(); window.location.href = "index.html"; }
+
+    async function loadNews(page = 1) {
+        currentPage = page;
+        document.getElementById('news-feed').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        const res = await apiFetch(`${API_URL}/read?page=${page}&limit=5`);
+        if (!res || !res.ok) return;
+        const data = await res.json();
+        renderNews(data.data); renderPagination(data.current_page, data.total_pages);
+    }
+
+    function renderNews(posts) {
+        const feed = document.getElementById('news-feed'); feed.innerHTML = '';
+        if (!posts || posts.length === 0) return feed.innerHTML = '<p class="loading">No articles found.</p>';
+        posts.forEach(post => {
+            let deleteBtn = currentUserRole === 'admin' ? `<button class="btn-danger" onclick="deleteNews(${post.id})">Delete</button>` : '';
+            feed.innerHTML += `
+                <div class="news-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="badge">${post.category || 'General'}</span>
+                        <div><small style="color:#666;">${post.date}</small> ${deleteBtn}</div>
+                    </div>
+                    <h4>${post.title}</h4><p>${post.content}</p>
+                    <hr style="border:0; border-top:1px solid #ddd; margin:16px 0;">
+                    <h5>Comments</h5><div id="comments-${post.id}">Loading...</div>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <input type="text" id="comment-input-${post.id}" placeholder="Add comment..." style="flex:1; padding:8px; border-radius:6px; border:1px solid #ccc;">
+                        <button class="btn" onclick="postComment(${post.id})">Send</button>
+                    </div>
+                </div>`;
+            loadComments(post.id);
+        });
+    }
+
+    function renderPagination(current, total) {
+        const pag = document.getElementById('pagination'); pag.innerHTML = '';
+        for (let i = 1; i <= total; i++) pag.innerHTML += `<button class="${i === current ? 'active' : ''}" onclick="loadNews(${i})">${i}</button>`;
+    }
+
+    async function filterByCategory(cat) {
+        scrollToTop();
+        if (cat === 'All') return loadNews(1);
+        const res = await apiFetch(`${API_URL}/posts/${cat}`);
+        if (res && res.ok) { const posts = await res.json(); renderNews(posts); document.getElementById('pagination').innerHTML = ''; }
+    }
+
+    async function searchNews() {
+        const query = document.getElementById('search-input').value.trim();
+        if (!query) return loadNews();
+        const res = await apiFetch(`${API_URL}/posts/${encodeURIComponent(query)}`);
+        if (res && res.ok) { const posts = await res.json(); renderNews(posts); document.getElementById('pagination').innerHTML = ''; }
+        else showToast("No results found", "error");
+    }
+
+    async function postNews() {
+        const data = { date: document.getElementById('post-date').value, title: document.getElementById('post-title').value, content: document.getElementById('post-content').value, category: document.getElementById('post-category').value };
+        const res = await apiFetch(`${API_URL}/post`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+        if (res && res.ok) { showToast("Article Published!"); document.getElementById('post-title').value = ''; document.getElementById('post-content').value = ''; loadNews(); }
+        else showToast("Failed to publish", "error");
+    }
+
+    async function deleteNews(id) {
+        if (!confirm("Delete this article?")) return;
+        const res = await apiFetch(`${API_URL}/delete_news/${id}`, { method: 'DELETE' });
+        if (res && res.ok) { showToast("Deleted"); loadNews(currentPage); }
+    }
+
+    async function loadComments(newsId) {
+        const res = await apiFetch(`${API_URL}/read_comment/${newsId}`);
+        const container = document.getElementById(`comments-${newsId}`);
+        if (res && res.ok) { const comments = await res.json(); container.innerHTML = comments.length ? comments.map(c => `<div class="comment-box">💬 ${c.comment}</div>`).join('') : '<i style="color:#888;">No comments yet.</i>'; }
+    }
+
+    async function postComment(newsId) {
+        const input = document.getElementById(`comment-input-${newsId}`); const commentText = input.value.trim(); if (!commentText) return;
+        const res = await apiFetch(`${API_URL}/comments/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ news_id: newsId, comment: commentText }) });
+        if (res && res.ok) { input.value = ''; loadComments(newsId); showToast("Comment posted"); }
+    }
+</script>
+</body>
+</html>
