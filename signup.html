@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hivenews - Sign Up</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Roboto, sans-serif; }
+
+    body { 
+        display: flex; 
+        flex-direction: column; /* key fix */
+        min-height: 100vh; 
+        background: linear-gradient(rgba(10, 30, 60, 0.75), rgba(10, 30, 60, 0.75)), 
+                    url('https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=2069') center/cover no-repeat;
+        background-attachment: fixed;
+    }
+    
+    .page-wrapper {
+        flex: 1; /* pushes footer down */
+        display: flex; 
+    }
+
+    .signup-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
+    
+    .signup-box {
+        width: 100%; max-width: 450px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 20px; padding: 40px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4); color: #fff;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 24px; font-weight: 700; }
+    h1 { font-size: 32px; margin-bottom: 8px; }
+    .subtitle { color: rgba(255,255,255,0.8); margin-bottom: 24px; }
+
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; }
+    
+    .input-wrapper { position: relative; }
+    input {
+        width: 100%; padding: 12px 14px 12px 40px; 
+        border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
+        background: rgba(255,255,255,0.1); color: #fff; font-size: 15px; outline: none;
+    }
+    input::placeholder { color: rgba(255,255,255,0.6); }
+    input:focus { border-color: #3b82f6; background: rgba(255,255,255,0.15); }
+    input.error { border-color: #ef4444; }
+    
+    .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); }
+
+    .error-text { color: #fca5a5; font-size: 12px; margin-top: 4px; display: none; }
+    .server-error { color: #fca5a5; font-size: 14px; text-align: center; margin-bottom: 12px; display: none; }
+
+    .btn {
+        width: 100%; padding: 14px; background: #3b82f6; color: #fff;
+        border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+        cursor: pointer; margin-top: 8px; transition: 0.2s;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn:disabled { background: #64748b; cursor: not-allowed; }
+
+    .signin-text { text-align: center; margin-top: 20px; font-size: 14px; color: rgba(255,255,255,0.8); }
+    .signin-text a { color: #93c5fd; text-decoration: none; font-weight: 600; }
+    .signin-text a:hover { text-decoration: underline; }
+
+    .welcome-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 24px; text-align: left; color: #fff; }
+    .welcome-content h2 { font-size: 48px; margin-bottom: 16px; line-height: 1.2; }
+    .welcome-content p { font-size: 18px; opacity: 0.9; margin-bottom: 24px; }
+    .benefit { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 16px; }
+    .check { width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; }
+
+    @media (max-width: 900px) {
+        .page-wrapper { flex-direction: column; }
+        .welcome-container { order: -1; flex: 0 0 300px; text-align: center; }
+        .welcome-content h2 { font-size: 32px; }
+        .signup-box { padding: 28px; }
+    }
+    
+    /* GLASS FOOTER */
+    .site-footer {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        color: #cbd5e1;
+        padding: 50px 40px 20px;
+        border-top: 1px solid rgba(59,130,246,0.3);
+    }
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+    }
+    @media (max-width: 900px) {.footer-container { grid-template-columns: repeat(2, 1fr); }}
+    @media (max-width: 600px) {.footer-container { grid-template-columns: 1fr; }}
+
+    .footer-col h3 { color: #fff; font-size: 24px; margin-bottom: 12px; }
+    .footer-col h4 { color: #3b82f6; font-size: 16px; margin-bottom: 16px; text-transform: uppercase; }
+    .footer-col p { font-size: 14px; line-height: 1.6; opacity: 0.8; }
+    .footer-col ul { list-style: none; padding: 0; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { color: #cbd5e1; text-decoration: none; transition: 0.2s; }
+    .footer-col ul li a:hover { color: #3b82f6; }
+    .footer-contact a { color: #cbd5e1; text-decoration: none; }
+    .footer-contact a:hover { color: #3b82f6; }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 40px;
+        padding-top: 20px;
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        max-width: 1200px;
+        margin: 40px auto 0;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+    .footer-tabs a { color: #3b82f6; text-decoration: none; font-size: 14px; }
+    .footer-tabs a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <div class="signup-container">
+        <div class="signup-box">
+            <div class="logo">📰 Hivenews</div>
+
+            <h1>Sign Up</h1>
+            <p class="subtitle">Create your account to get started</p>
+            
+            <p class="server-error" id="serverError"></p>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Username</label>
+                    <div class="input-wrapper">
+                        <span class="icon">👤</span>
+                        <input type="text" id="name" placeholder="Enter your username" required>
+                    </div>
+                    <p class="error-text" id="nameError">Username is required</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <span class="icon">💌</span>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <p class="error-text" id="emailError">Please enter a valid email</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="icon">🔒</span>
+                        <input type="password" id="password" placeholder="Min 6 characters" required>
+                    </div>
+                    <p class="error-text" id="passwordError">Password must be at least 6 characters</p>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Create Account</button>
+            </form>
+
+            <p class="signin-text">
+                Already have an account? <a href="index.html">Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <h2>Join Hivenews</h2>
+            <p>Get unlimited access to trusted stories from around the world</p>
+            <div class="benefit"><div class="check">✓</div> Real-time breaking news & updates</div>
+            <div class="benefit"><div class="check">✓</div> Personalized news for your interests</div>
+            <div class="benefit"><div class="check">✓</div> In-depth analysis & exclusive reports</div>
+        </div>
+    </div>
+</div> <!-- end page-wrapper -->
+    
+<footer class="site-footer">
+    <div class="footer-container">
+        
+        <div class="footer-col">
+            <h3>Hivenews</h3>
+            <p>Your trusted source for breaking news, technology, and global stories.</p>
+            <div class="footer-contact" style="margin-top:12px;">
+                <p>📞 <a href="tel:0535574813">0535574813</a></p>
+                <p>📧 <a href="mailto:akorbileevans100@gmail.com">akorbileevans100@gmail.com</a></p>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">World</a></li>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Sports</a></li>
+                <li><a href="#">Education</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Developers</h4>
+            <p><strong>Frontend:</strong> Akorbile Evans</p>
+            <p><strong>Backend:</strong> Abugri Moses</p>
+            <p>In corporation</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Hivenews. All Rights Reserved.</p>
+        <div class="footer-tabs">
+            <a href="#">Facebook</a> | 
+            <a href="#">Twitter</a> | 
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const API_URL = "https://hivenews-v2.onrender.com";
+    const form = document.getElementById('signupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const serverError = document.getElementById('serverError');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let isValid = true;
+        serverError.style.display = 'none';
+
+        document.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+        document.querySelectorAll('.error-text').forEach(error => error.style.display = 'none');
+
+        if (nameInput.value.trim() === '') {
+            showError(nameInput, 'nameError');
+            isValid = false;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+            showError(emailInput, 'emailError');
+            isValid = false;
+        }
+
+        if (passwordInput.value.length < 6) {
+            showError(passwordInput, 'passwordError');
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Creating Account...";
+
+        const data = {
+            username: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            password: passwordInput.value
+        };
+
+        try {
+            const res = await fetch(`${API_URL}/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
+                alert('Account created successfully! 🎉 Redirecting to login...');
+                window.location.href = "index.html";
+            } else {
+                serverError.innerText = result.detail || "Signup failed. Try again.";
+                serverError.style.display = 'block';
+            }
+        } catch (err) {
+            serverError.innerText = "Network error. Is your backend running?";
+            serverError.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Create Account";
+        }
+    });
+
+    function showError(input, errorId) {
+        input.classList.add('error');
+        document.getElementById(errorId).style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
