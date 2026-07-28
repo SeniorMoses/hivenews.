@@ -109,7 +109,7 @@
                         <span class="icon">🔒</span>
                         <input type="password" id="password" placeholder="Min 8 characters" required>
                     </div>
-                    <p class="error-text" id="passwordError">Password must be at least 6 characters</p>
+                    <p class="error-text" id="passwordError">Password must be at least 8 characters</p>
                 </div>
 
                 <button type="submit" class="btn" id="submitBtn">Create Account</button>
@@ -163,7 +163,7 @@
         }
 
         // 3. Password validation
-        if (passwordInput.value.length < 6) {
+        if (passwordInput.value.length < 8) {
             showError(passwordInput, 'passwordError');
             isValid = false;
         }
