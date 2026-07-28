@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hivenews - Sign In</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Roboto, sans-serif; }
+    
+    body { 
+        display: flex; 
+        flex-direction: column; /* key fix */
+        min-height: 100vh; 
+        background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070') center/cover no-repeat; 
+        background-attachment: fixed; 
+    }
+    
+   .page-wrapper {
+        flex: 1; /* pushes footer down */
+        display: flex; 
+    }
+
+   .signin-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
+   .signin-box { width: 100%; max-width: 420px; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 36px; color: #fff; }
+   .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; font-size: 24px; font-weight: 700; }
+    h1 { font-size: 32px; margin-bottom: 8px; }
+   .subtitle { color: rgba(255,255,255,0.8); margin-bottom: 24px; }
+    label { display: block; margin-bottom: 6px; font-size: 14px; }
+    input { width: 100%; padding: 12px 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.1); color: #fff; outline: none; }
+    input::placeholder { color: rgba(255,255,255,0.5); }
+   .btn { width: 100%; padding: 14px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+   .btn:hover { background: #2563eb; }
+   .error { color: #fca5a5; font-size: 13px; margin-bottom: 12px; }
+   .signup-text { text-align: center; margin-top: 20px; font-size: 14px; }
+   .signup-text a { color: #93c5fd; text-decoration: none; font-weight: 600; }
+   .welcome-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 24px; text-align: center; color: #fff; }
+   .welcome-content h2 { font-size: 42px; line-height: 1.2; }
+   .welcome-content p { font-size: 18px; opacity: 0.8; margin-top: 12px; }
+    
+    @media (max-width: 900px) { 
+       .page-wrapper { flex-direction: column; } 
+       .welcome-container { order: -1; flex: 0 0 280px; } 
+       .welcome-content h2 { font-size: 32px; }
+    }
+    
+    /* GLASS FOOTER */
+   .site-footer {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        color: #cbd5e1;
+        padding: 50px 40px 20px;
+        border-top: 1px solid rgba(59,130,246,0.3);
+    }
+   .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+    }
+    @media (max-width: 900px) {.footer-container { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) {.footer-container { grid-template-columns: 1fr; } }
+
+   .footer-col h3 { color: #fff; font-size: 24px; margin-bottom: 12px; }
+   .footer-col h4 { color: #3b82f6; font-size: 16px; margin-bottom: 16px; text-transform: uppercase; }
+   .footer-col p { font-size: 14px; line-height: 1.6; opacity: 0.8; }
+   .footer-col a { font-size: 14px; color: #cbd5e1; text-decoration: none; transition: 0.2s; }
+   .footer-col a:hover { color: #3b82f6; }
+   .footer-col ul { list-style: none; padding: 0; }
+   .footer-col ul li { margin-bottom: 10px; }
+
+   .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 40px;
+        padding-top: 20px;
+        text-align: center;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <div class="signin-container">
+        <div class="signin-box">
+            <div class="logo">📰 Hivenews</div>
+            <h1>Sign In</h1>
+            <p class="subtitle">Welcome back — please sign in to your account</p>
+
+            <form id="loginForm">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="you@example.com" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••" required>
+
+                <p id="login-error" class="error"></p>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+           
+            <p class="signup-text">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <h2>Welcome to<br>Hivenews</h2>
+            <p>Stay informed with trusted stories from around the world</p>
+        </div>
+    </div>
+</div> <!-- end page-wrapper -->
+    
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-col">
+            <h3>Hivenews</h3>
+            <p>Your trusted source for breaking news, technology, and global stories.</p>
+            <div class="footer-contact" style="margin-top:12px;">
+                <p>📞 <a href="tel:0535574813">0535574813</a></p>
+                <p>📧 <a href="mailto:akorbileevans100@gmail.com">akorbileevans100@gmail.com</a></p>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Developers</h4>
+            <p><strong>Frontend:</strong> Akorbile Evans</p>
+            <p><strong>Backend:</strong> Abugri Moses</p>
+            <p>In corporation</p>
+        </div>
+
+        <div class="footer-col">
+            <h4>Follow Us</h4>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">Instagram</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Hivenews. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    const API_URL = "https://hivenews-v2.onrender.com";
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        document.getElementById('login-error').innerText = '';
+
+        const formData = new URLSearchParams();
+        formData.append('username', document.getElementById('email').value);
+        formData.append('password', document.getElementById('password').value);
+
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+            const result = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem('access_token', result.access_token);
+                const payload = JSON.parse(atob(result.access_token.split('.')[1]));
+                localStorage.setItem('user_role', payload.role);
+                window.location.href = "dashboard.html";
+            } else {
+                document.getElementById('login-error').innerText = result.detail || 'Invalid credentials';
+            }
+        } catch (err) {
+            document.getElementById('login-error').innerText = 'Network error connecting to server';
+        }
+    });
+</script>
+</body>
+</html>
